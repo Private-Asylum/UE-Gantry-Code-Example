@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{51821BD7-C523-4665-94B9-2E4D26D6EAFC}",
+	"Category": "",
+	"Description": "Railhead: a co-op freight train crossing a world that loads as it goes. The C++ example for Gantry.",
+	"Modules": [
+		{
+			"Name": "Railhead",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Gantry",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		},
+		{
+			"Name": "DataValidation",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	],
+	"TargetPlatforms": [
+		"Linux",
+		"Windows",
+		"Mac"
+	]
+}
