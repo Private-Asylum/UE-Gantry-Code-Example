@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Freight Van (example mod)",
+	"Description": "A green freight van coupled behind the wagons on every Coast stretch. Shipped as one .gantry file and dropped into a running game, it joins at the next tunnel.",
+	"Category": "Game Features",
+	"CreatedBy": "Private Asylum",
+	"CreatedByURL": "https://privateasylum.com/",
+	"DocsURL": "https://privateasylum.com/gantry/",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"ExplicitlyLoaded": true,
+	"EnabledByDefault": false,
+	"BuiltInInitialFeatureState": "Registered",
+	"Plugins": [
+		{
+			"Name": "Gantry",
+			"Enabled": true
+		}
+	]
+}

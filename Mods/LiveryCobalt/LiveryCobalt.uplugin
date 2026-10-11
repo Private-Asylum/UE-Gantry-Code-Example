@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Cobalt Caboose (example mod)",
+	"Description": "Repaints the caboose cobalt blue, from config alone. One of a pair: with Saffron Caboose installed too, both set the same livery key and Gantry reports the clash.",
+	"Category": "Game Features",
+	"CreatedBy": "Private Asylum",
+	"CreatedByURL": "https://privateasylum.com/",
+	"DocsURL": "https://privateasylum.com/gantry/",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"ExplicitlyLoaded": true,
+	"EnabledByDefault": false,
+	"BuiltInInitialFeatureState": "Registered",
+	"Plugins": [
+		{
+			"Name": "Gantry",
+			"Enabled": true
+		}
+	]
+}

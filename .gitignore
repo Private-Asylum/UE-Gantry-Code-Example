@@ -111,3 +111,13 @@ DocGen/
 /Mods/*/Saved/
 /Mods/*/Intermediate/
 /Mods/*/Binaries/
+
+# Mods are tracked as source (their .uplugin, Config, Content and Source). What building and cooking them produces is not.
+/Mods/*/Content/Paks/
+/Mods/*/Saved/
+/Mods/*/Intermediate/
+/Mods/*/Binaries/
+/ModsWithProblems/*/Content/Paks/
+/ModsWithProblems/*/Saved/
+/ModsWithProblems/*/Intermediate/
+/ModsWithProblems/*/Binaries/
