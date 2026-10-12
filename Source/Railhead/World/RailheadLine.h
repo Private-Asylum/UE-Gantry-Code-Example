@@ -110,14 +110,16 @@ struct RAILHEAD_API FRailheadLineMotion
  *   instanced components it keeps for the whole session, in place: one per mesh and paint, never
  *   created, cleared or rebuilt as the train moves, with spare instances parked out of sight.
  * - **Dedicated server:** draws nothing.
- *
  * - **Weather:** AddWeather lays sun, haze and snow over the stretches' light, on this machine.
- *   The line is a Game Framework Component Manager receiver, so a game feature (a mod's) adds a
- *   component that brings weather in and takes it away again.
+ *   The Weather stage (URailheadStage_Weather) calls it. The line is also a Game Framework
+ *   Component Manager receiver (listed in Gantry's Automatic Receiver Classes), so a game
+ *   feature's Add Components action can give it a component that does the same.
+ * - **Speed:** every tick the server runs the Railhead.Hook.Line.Speed hook (FRailheadLineSpeed)
+ *   with the speed the boiler and the tunnel ask for, and heads for whatever its listeners leave.
  *
  * The game mode spawns it at the origin, alongside the train.
  */
-UCLASS(meta = (ShortTooltip = "Scrolls the world past the train and runs the route through Gantry's experiences."))
+UCLASS(meta = (GantryAPI, ShortTooltip = "Scrolls the world past the train and runs the route through Gantry's experiences."))
 class RAILHEAD_API ARailheadLine : public AActor
 {
 	GENERATED_BODY()
@@ -145,11 +147,11 @@ public:
 	const FRailheadLineState& GetState() const { return State; }
 
 	/** @return This machine's view of the distance travelled, in metres. */
-	UFUNCTION(BlueprintPure, Category = "Railhead|Line")
+	UFUNCTION(BlueprintPure, Category = "Railhead|Line", meta = (GantryAPI))
 	double GetDistance() const { return LocalDistance; }
 
 	/** @return The train's speed in metres per second. */
-	UFUNCTION(BlueprintPure, Category = "Railhead|Line")
+	UFUNCTION(BlueprintPure, Category = "Railhead|Line", meta = (GantryAPI))
 	float GetSpeed() const { return LocalSpeed; }
 
 	/** @return Metres from the front of the train to the next tunnel; 0 once inside. */
@@ -157,7 +159,7 @@ public:
 	float GetMetersToTunnel() const;
 
 	/** @return True while any part of the train is inside a tunnel, on this machine's view. */
-	UFUNCTION(BlueprintPure, Category = "Railhead|Line")
+	UFUNCTION(BlueprintPure, Category = "Railhead|Line", meta = (GantryAPI))
 	bool IsTrainInTunnel() const;
 
 	/**
@@ -166,25 +168,31 @@ public:
 	 * @param Source Who asks; asking again replaces its weather.
 	 * @param Weather The weather.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Railhead|Line")
+	UFUNCTION(BlueprintCallable, Category = "Railhead|Line", meta = (GantryAPI))
 	void AddWeather(UObject* Source, const FRailheadWeather& Weather);
 
 	/**
 	 * Takes a source's weather away again; the line eases back.
 	 * @param Source Who asked.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Railhead|Line")
+	UFUNCTION(BlueprintCallable, Category = "Railhead|Line", meta = (GantryAPI))
 	void RemoveWeather(UObject* Source);
 
 	/** How far the train reaches from its centre when there is no train to ask, in metres. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Railhead|Line", meta = (ClampMin = "1.0", Units = "m"))
 	float TrainHalfLengthMeters = 40.0f;
 
-	/** Gain or loss of speed in metres per second, per second, unless the active experiences bring line rules (URailheadLineRules). */
+	/**
+	 * Gain or loss of speed in metres per second, per second, unless the active experiences bring
+	 * line rules (URailheadLineRules).
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Railhead|Line", meta = (ClampMin = "0.1"))
 	float Acceleration = 1.5f;
 
-	/** In a tunnel, the fraction of its speed the train keeps while the next stretch has loaded nothing, unless line rules say otherwise. */
+	/**
+	 * In a tunnel, the fraction of its speed the train keeps while the next stretch has loaded
+	 * nothing, unless line rules say otherwise.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Railhead|Line", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float TunnelCrawlFraction = 0.2f;
 
@@ -246,9 +254,11 @@ protected:
 	/** A stretch's length with the development scale applied. */
 	static double StretchLength(const URailheadStretchDefinition* Stretch);
 
+	/** Clients: the route state arrived. Nothing to do; every frame reads it. */
 	UFUNCTION()
 	void OnRep_State();
 
+	/** Clients: the server's distance and speed arrived; remembered, with when, for TickFollow. */
 	UFUNCTION()
 	void OnRep_Motion();
 
@@ -270,9 +280,11 @@ private:
 	/** The registry's version when the scenery was last placed. */
 	int32 SceneryVersion = -1;
 
+	/** Which stretches the track runs through, and where; the server decides it. */
 	UPROPERTY(ReplicatedUsing = OnRep_State)
 	FRailheadLineState State;
 
+	/** The server's distance and speed, sent to clients up to ten times a second. */
 	UPROPERTY(ReplicatedUsing = OnRep_Motion)
 	FRailheadLineMotion Motion;
 
@@ -350,8 +362,10 @@ private:
 	bool bHasLight = false;
 	bool bLightSettled = false;
 
+	/** Server: the line's listener on Gantry's high ready tier. */
 	FDelegateHandle ReadyHandle;
 
+	/** Stands still at the origin; the track pieces and the scroll root hang from it. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Line")
 	TObjectPtr<USceneComponent> Root;
 
@@ -363,18 +377,23 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Line")
 	TObjectPtr<UInstancedStaticMeshComponent> Sleepers;
 
+	/** The left rail: one long bar through the drawn window, which never needs to move. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Line")
 	TObjectPtr<UStaticMeshComponent> RailLeft;
 
+	/** The right rail, the same. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Line")
 	TObjectPtr<UStaticMeshComponent> RailRight;
 
+	/** The stone bed under the sleepers, the same. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Line")
 	TObjectPtr<UStaticMeshComponent> Ballast;
 
+	/** The engine's basic cube, which the track and the tunnels are made of. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> CubeMesh;
 
+	/** The flat paint every piece is drawn with, tinted per colour (M_Railhead_Paint). */
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> PaintMaterial;
 };

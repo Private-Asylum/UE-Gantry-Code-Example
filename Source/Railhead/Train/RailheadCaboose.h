@@ -35,8 +35,13 @@ protected:
 
 private:
 
-	/** Paints the body from the livery. */
+	/**
+	 * Paints the body from the livery, read again from the config.
+	 * @param Experience The experience that became ready; unused, since the livery is the same
+	 *        whichever it is.
+	 */
 	void ApplyLivery(const UGantryExperienceDefinition* Experience = nullptr);
 
+	/** The caboose's listener on Gantry's low ready tier. */
 	FDelegateHandle ReadyHandle;
 };

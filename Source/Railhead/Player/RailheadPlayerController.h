@@ -42,10 +42,17 @@ protected:
 	/** Takes any menus off the screen. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Puts a widget on this player's screen. */
+	/**
+	 * Puts a widget on this player's screen.
+	 * @param Widget The widget.
+	 * @param ZOrder Higher draws over lower.
+	 */
 	void ShowWidget(const TSharedRef<SWidget>& Widget, int32 ZOrder);
 
-	/** Takes a widget off this player's screen. */
+	/**
+	 * Takes a widget off this player's screen.
+	 * @param Widget The widget; nothing happens when it is null.
+	 */
 	void HideWidget(const TSharedPtr<SWidget>& Widget);
 
 	/** Input to the game, or to menus with a cursor, by whether a menu is up. */
@@ -54,7 +61,10 @@ protected:
 	/** Whether this controller always shows a menu (the main menu's controller). */
 	virtual bool IsMenuController() const { return false; }
 
+	/** The pause menu, while it is up. */
 	TSharedPtr<SRailheadPauseMenu> PauseMenu;
+
+	/** The settings screen, while it is up. */
 	TSharedPtr<SRailheadSettings> Settings;
 
 private:
@@ -62,5 +72,6 @@ private:
 	/** Binds Menu from the experience's input config, once. */
 	void HandleExperienceReady(const UGantryExperienceDefinition* Experience);
 
+	/** Whether Menu has been bound, so it is bound once. */
 	bool bMenuBound = false;
 };

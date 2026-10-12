@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "Components/GameFrameworkComponentManager.h"
 
 #include "RailheadTrain.generated.h"
 
@@ -17,18 +16,20 @@ class UStaticMeshComponent;
 /**
  * The train: a locomotive, its tender and three open wagons, built from the engine's basic shapes.
  *
- * The game mode builds it at the world's origin, where it stands still while ARailheadLine moves the world past it, so the crew
- * walk on an actor that never moves and nothing about the train needs movement replication. What
- * does replicate is the boiler: its pressure sets the train's speed, it drains as the train runs,
- * and the crew keep it up by carrying coal from the tender to the firebox in the cab.
+ * The game mode builds it at the world's origin, where it stands still while ARailheadLine moves
+ * the world past it, so the crew walk on an actor that never moves and nothing about the train
+ * needs movement replication. What does replicate is the boiler: its pressure sets the train's
+ * speed, it drains as the train runs, and the crew keep it up by carrying coal from the tender to
+ * the firebox in the cab.
  *
  * Interactive parts carry a component tag: `CoalPile` on the tender's coal, `Firebox` in the cab.
  *
  * Cars that come and go with experiences (ARailheadCar: the caboose, a mod's van) couple behind
- * the wagons, tail cars last. The train is a Game Framework Component Manager receiver, so a game
- * feature (a mod's included) can add components to it.
+ * the wagons, tail cars last. The train is a Game Framework Component Manager receiver (listed in
+ * Gantry's Automatic Receiver Classes), so a game feature (a mod's included) can add components
+ * to it with an Add Components action.
  */
-UCLASS(meta = (ShortTooltip = "The train the crew ride and stoke. Stands still; the line moves the world."))
+UCLASS(meta = (GantryAPI, ShortTooltip = "The train the crew ride and stoke. Stands still; the line moves the world."))
 class RAILHEAD_API ARailheadTrain : public AActor
 {
 	GENERATED_BODY()
@@ -69,18 +70,18 @@ public:
 	 * train out again. Its attachment replicates.
 	 * @param Car A car spawned for this train.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Railhead|Train")
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Railhead|Train", meta = (GantryAPI))
 	void CoupleCar(ARailheadCar* Car);
 
 	/**
 	 * Server: uncouples a car and closes the gap it leaves. The car is the caller's to destroy.
 	 * @param Car A coupled car.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Railhead|Train")
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Railhead|Train", meta = (GantryAPI))
 	void UncoupleCar(ARailheadCar* Car);
 
 	/** @return The coupled cars, front to back, on this machine. */
-	UFUNCTION(BlueprintPure, Category = "Railhead|Train")
+	UFUNCTION(BlueprintPure, Category = "Railhead|Train", meta = (GantryAPI))
 	TArray<ARailheadCar*> GetCoupledCars() const;
 
 	/** @return Metres from the train's centre to its front buffer. */
@@ -117,7 +118,6 @@ protected:
 
 	/* AActor interface. */
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	/* AActor interface. */
 
 private:
@@ -132,18 +132,37 @@ private:
 	/** Where the last built-in wagon ends, in centimetres along X: coupled cars go behind it. */
 	double TailX = 0.0;
 
-	/** Adds one painted piece; centre and size in centimetres. */
+	/**
+	 * Adds one painted piece; the paint is applied on construction.
+	 * @param Name The component's name.
+	 * @param Mesh One of the basic shapes, 1 m across.
+	 * @param Centre Where the piece's centre sits, in centimetres, relative to the train.
+	 * @param SizeCm The piece's size in centimetres.
+	 * @param Color Its paint.
+	 * @param Rotation Its turn, for cylinders laid along or across the track.
+	 * @param Glow How strongly the paint glows; 0 for none.
+	 * @return The piece.
+	 */
 	UStaticMeshComponent* AddPart(const TCHAR* Name, UStaticMesh* Mesh, const FVector& Centre, const FVector& SizeCm, const FLinearColor& Color, const FRotator& Rotation = FRotator::ZeroRotator, float Glow = 0.0f);
 
-	/** Adds a wagon's deck, frame and wheels between two X positions. */
+	/**
+	 * Adds a wagon's deck, frame and wheels between two X positions.
+	 * @param Name Prefix for the parts' names.
+	 * @param RearX Where the wagon ends at the back, in centimetres along X.
+	 * @param FrontX Where it ends at the front.
+	 * @param Color The deck's paint.
+	 */
 	void AddWagonBase(const TCHAR* Name, double RearX, double FrontX, const FLinearColor& Color);
 
+	/** Boiler pressure, 0 (cold) to 1; the server's, replicated to everyone. */
 	UPROPERTY(Replicated)
 	float Pressure = 0.7f;
 
+	/** The train's origin, at rail height under its centre; every part hangs from it. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Train")
 	TObjectPtr<USceneComponent> Root;
 
+	/** The locomotive's lamp, lighting the track ahead in a tunnel. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Train")
 	TObjectPtr<USpotLightComponent> Headlamp;
 
@@ -159,9 +178,11 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> Parts;
 
+	/** Each piece's paint colour, by its index in Parts. */
 	UPROPERTY()
 	TArray<FLinearColor> PartColors;
 
+	/** Each piece's glow, by its index in Parts. */
 	UPROPERTY()
 	TArray<float> PartGlows;
 
@@ -169,15 +190,19 @@ private:
 	UPROPERTY()
 	TArray<FVector> CrewSpots;
 
+	/** The engine's basic cube. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> CubeMesh;
 
+	/** The engine's basic cylinder: boiler, chimney, wheels. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> CylinderMesh;
 
+	/** The engine's basic sphere: the dome. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> SphereMesh;
 
+	/** The flat paint every piece is drawn with, tinted per piece (M_Railhead_Paint). */
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> PaintMaterial;
 };

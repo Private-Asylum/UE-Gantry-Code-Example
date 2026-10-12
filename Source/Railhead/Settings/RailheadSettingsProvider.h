@@ -6,6 +6,7 @@
 
 #include "RailheadSettingsProvider.generated.h"
 
+// @doc
 /**
  * Railhead's settings, declared in code for each local player: the Video page (the display and how
  * much the game draws, through the engine's user settings) and the Crew page (field of view and
@@ -15,7 +16,7 @@
  * function bound to the setting. The Coast Line's own page is an asset its experience adds
  * (SP_Coast), to show the other way in.
  *
- * Listed in Project Settings -> Plugins -> Gantry Settings -> Providers.
+ * Listed in Project Settings > Plugins > Gantry Settings > Providers.
  */
 UCLASS()
 class URailheadSettingsProvider : public UGantrySettingsProvider
@@ -36,6 +37,7 @@ private:
 	static UGantrySettingsPage* CreateCrewPage(UGantrySettingsRegistry* Registry);
 };
 
+// @doc
 /**
  * Railhead's Controls page: one key-binding setting per rebindable key, read from Enhanced Input's
  * player settings. Those keys exist only once their mapping context is registered for rebinding,

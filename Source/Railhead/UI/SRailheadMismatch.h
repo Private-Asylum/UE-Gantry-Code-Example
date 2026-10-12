@@ -20,5 +20,6 @@ public:
 		SLATE_ARGUMENT(FText, Reason)
 	SLATE_END_ARGS()
 
+	/** Builds the screen: Gantry's reason and the way back to the main menu. */
 	void Construct(const FArguments& InArgs);
 };

@@ -11,7 +11,6 @@
 #include "Messages/GantryMessageSubsystem.h"
 #include "Train/RailheadTrain.h"
 
-#include "Components/GameFrameworkComponentManager.h"
 
 #include "Components/DirectionalLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
@@ -151,9 +150,6 @@ void ARailheadLine::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Game features (a mod's weather among them) add components to the line.
-	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
-
 	UWorld* World = GetWorld();
 
 	if (HasAuthority())
@@ -209,8 +205,6 @@ void ARailheadLine::BeginPlay()
 
 void ARailheadLine::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
 	// A placement still being worked out is waited for and dropped.
 	if (PendingPlacement.IsSet())
 	{
@@ -398,7 +392,14 @@ void ARailheadLine::TickServer(float DeltaSeconds)
 		const float Progress = Streaming ? Streaming->GetOverallProgress() : 1.0f;
 		Target *= FMath::Lerp(TunnelCrawlFraction, 1.0f, Progress);
 	}
-	Target *= FMath::Max(0.0f, RailheadCVars::SpeedScale.GetValueOnGameThread());
+
+	// Then anything listening (the weather, a mod) has its say.
+	FRailheadLineSpeed Speed;
+	Speed.TargetSpeed = Target;
+	Speed.Stretch = State.Stretch;
+	Speed.bInTunnel = State.Phase == ERailheadLinePhase::Tunnel;
+	Gantry::RunHook(this, RailheadTags::Hook_Line_Speed, Speed);
+	Target = FMath::Max(0.0f, Speed.TargetSpeed) * FMath::Max(0.0f, RailheadCVars::SpeedScale.GetValueOnGameThread());
 
 	LocalSpeed = FMath::FInterpConstantTo(LocalSpeed, Target, DeltaSeconds, Acceleration * FMath::Max(1.0f, RailheadCVars::SpeedScale.GetValueOnGameThread()));
 	LocalDistance += LocalSpeed * DeltaSeconds;

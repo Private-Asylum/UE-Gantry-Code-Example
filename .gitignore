@@ -121,3 +121,11 @@ DocGen/
 /ModsWithProblems/*/Saved/
 /ModsWithProblems/*/Intermediate/
 /ModsWithProblems/*/Binaries/
+
+# Other local editor, IDE and operating system files.
+*.code-workspace
+CMakeLists.txt
+compile_commands.json
+.cache/
+.DS_Store
+Thumbs.db

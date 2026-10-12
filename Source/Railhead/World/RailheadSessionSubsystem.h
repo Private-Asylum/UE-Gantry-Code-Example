@@ -27,10 +27,16 @@ class RAILHEAD_API URailheadSessionSubsystem : public UGameInstanceSubsystem
 
 public:
 
-	/** @return The game instance's session subsystem, or null. */
+	/**
+	 * @param WorldContextObject Any object in a world of the game instance.
+	 * @return The game instance's session subsystem, or null.
+	 */
 	static URailheadSessionSubsystem* Get(const UObject* WorldContextObject);
 
-	/** @return Whether this build can play alone (and so host). False in the Client target. */
+	/**
+	 * @return Whether this build can play alone (and so host). False in the Client target, and with
+	 *         -RailheadJoinOnly.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Railhead|Session")
 	static bool CanPlaySolo();
 
@@ -45,19 +51,37 @@ public:
 	/**
 	 * Reads what a player types into the join box: "host", "host:port", "[v6]:port" or a bare IPv6
 	 * address. The port defaults to 7777.
+	 * @param In What the player typed.
+	 * @param OutUrlHost The host as a travel URL needs it (an IPv6 address in brackets).
+	 * @param OutPort The port.
+	 * @param OutError Why it cannot be used; empty when it can.
 	 * @return False, with a reason a player can act on, when it cannot be used.
 	 */
 	static bool ParseAddress(const FString& In, FString& OutUrlHost, int32& OutPort, FText& OutError);
 
-	/** Plays the line alone. */
+	/**
+	 * Plays the line alone.
+	 * @param OutError Why not, when it cannot.
+	 * @return Whether the travel started.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Railhead|Session")
 	bool PlaySolo(FText& OutError);
 
-	/** Hosts the line on Port for others to join. */
+	/**
+	 * Hosts the line on Port for others to join.
+	 * @param Port The port to listen on, 1 to 65535.
+	 * @param OutError Why not, when it cannot.
+	 * @return Whether the travel started.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Railhead|Session")
 	bool Host(int32 Port, FText& OutError);
 
-	/** Joins a crew at Address ("host:port"). */
+	/**
+	 * Joins a crew at Address ("host:port").
+	 * @param Address What the player typed; read by ParseAddress.
+	 * @param OutError Why not, when it cannot.
+	 * @return Whether the travel started.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Railhead|Session")
 	bool Join(const FString& Address, FText& OutError);
 
@@ -69,10 +93,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Railhead|Session")
 	void Quit();
 
-	/** @return What the world is doing, for the pause menu ("Hosting on port 7777 · 3 crew"). */
+	/**
+	 * @param World The world to describe; may be null.
+	 * @return What the world is doing, for the pause menu ("Hosting on port 7777 · 3 crew").
+	 */
 	static FText DescribeWorld(const UWorld* World);
 
-	/** The map the crew ride on, and the menu's. */
+	/** @return The map the crew ride on. */
 	static const TCHAR* LineMap() { return TEXT("/Game/Railhead/Maps/L_Line"); }
+
+	/** @return The main menu's map. */
 	static const TCHAR* MenuMap() { return TEXT("/Game/Railhead/Maps/L_MainMenu"); }
 };

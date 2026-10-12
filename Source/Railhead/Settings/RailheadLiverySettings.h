@@ -8,14 +8,14 @@
 
 // @doc
 /**
- * The paint the train's cars are turned out in (Project Settings -> Game -> Livery).
+ * The paint the train's cars are turned out in (Project Settings > Game > Livery).
  *
  * Config, so a mod can repaint the train without code or assets: its Config/<Mod>Game.ini sets
- * a key in this section, and when its game feature activates the value lands here and the cars
- * repaint at the next stretch. Two mods setting the same key: the last to activate wins, and
+ * a key in this section, and when its game feature activates the value lands here and the caboose
+ * repaints at the next stretch. Two mods setting the same key: the last to activate wins, and
  * Gantry reports the clash.
  */
-UCLASS(Config = Game, DefaultConfig, meta = (DisplayName = "Livery"))
+UCLASS(Config = Game, DefaultConfig, meta = (GantryAPI, GantryAPIBlueprint, DisplayName = "Livery"))
 class RAILHEAD_API URailheadLiverySettings : public UDeveloperSettings
 {
 	GENERATED_BODY()

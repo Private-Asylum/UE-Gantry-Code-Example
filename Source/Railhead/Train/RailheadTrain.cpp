@@ -22,7 +22,8 @@
 
 namespace RailheadTrain
 {
-	// Deck height, width, wheels and gaps are every car's: RailheadCar.h. Front to back, in centimetres along X. The train is centred on the origin.
+	// Deck height, width, wheels and gaps are every car's: RailheadCar.h. Front to back, in
+	// centimetres along X. The train is centred on the origin.
 	constexpr double Front = 3390.0;
 	constexpr double LocoLength = 1500.0;
 	constexpr double TenderLength = 900.0;
@@ -228,18 +229,10 @@ void ARailheadTrain::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
-
 	if (HasAuthority())
 	{
 		Pressure = StartingPressure;
 	}
-}
-
-void ARailheadTrain::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-	Super::EndPlay(EndPlayReason);
 }
 
 void ARailheadTrain::CoupleCar(ARailheadCar* Car)

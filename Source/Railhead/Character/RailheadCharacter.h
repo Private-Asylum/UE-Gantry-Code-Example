@@ -15,6 +15,7 @@ struct FInputActionValue;
 UENUM(BlueprintType)
 enum class ERailheadInteraction : uint8
 {
+	/** Nothing in reach to use. */
 	None,
 	/** The tender's coal: take a shovelful. */
 	TakeCoal,
@@ -53,6 +54,7 @@ public:
 	 * Binds the crew's controls to this crew member: called by its readiness component once the
 	 * experience's input config has loaded (the keys themselves come from the experience's Add
 	 * Input Mappings stage).
+	 * @param Config The input actions to bind Move, Look, Jump and Interact from.
 	 */
 	void BindCrewInput(const class URailheadInputConfig& Config);
 
@@ -77,14 +79,26 @@ protected:
 	/** What a trace from this crew member's eyes would let them do. */
 	ERailheadInteraction TraceForInteraction() const;
 
+	/**
+	 * Walks along the camera's heading.
+	 * @param Value The Move action's 2D axis: X sideways, Y forward.
+	 */
 	void Move(const FInputActionValue& Value);
+
+	/**
+	 * Turns and tilts the view, by the Crew page's look sensitivity and inverted look.
+	 * @param Value The Look action's 2D axis: X turn, Y tilt.
+	 */
 	void Look(const FInputActionValue& Value);
+
+	/** Asks the server to act when this machine's own trace finds something to use. */
 	void Interact();
 
 	/** Asks the server to do what the crew member is looking at. */
 	UFUNCTION(Server, Reliable)
 	void ServerInteract();
 
+	/** Shows or hides the coal in hand as bCarryingCoal changes. */
 	UFUNCTION()
 	void OnRep_CarryingCoal();
 
@@ -92,8 +106,10 @@ protected:
 	void ApplyCrewColor();
 
 	/**
-	 * A number from the player's settings (Gantry settings, the Crew page), or Fallback when the
-	 * player has no such setting.
+	 * A number from the player's settings (Gantry settings, the Crew page).
+	 * @param Id The setting's id ("Crew.LookSensitivity").
+	 * @param Fallback What to use when the player has no such setting.
+	 * @return The setting's value, or Fallback.
 	 */
 	double CrewSetting(FName Id, double Fallback) const;
 
@@ -101,6 +117,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<URailheadCrewReadiness> Readiness;
 
+	/** The first-person camera, at eye height. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<UCameraComponent> Eyes;
 
@@ -108,6 +125,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<UStaticMeshComponent> Body;
 
+	/** The head, on top of the body, seen by everyone but its owner. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<UStaticMeshComponent> Head;
 
@@ -115,15 +133,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<UStaticMeshComponent> CoalInView;
 
+	/** The coal held in front of the body, for everyone else. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Crew")
 	TObjectPtr<UStaticMeshComponent> CoalHeld;
 
 private:
 
+	/** Whether a shovelful of coal is in hand; the server decides, everyone sees. */
 	UPROPERTY(ReplicatedUsing = OnRep_CarryingCoal)
 	bool bCarryingCoal = false;
 
+	/** What the owning machine's last trace offered, for the HUD's prompt. */
 	ERailheadInteraction Offer = ERailheadInteraction::None;
 
+	/** Whether the body has been painted in the player state's colour yet. */
 	bool bColorApplied = false;
 };

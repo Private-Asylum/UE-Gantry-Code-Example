@@ -15,13 +15,17 @@ public:
 	SLATE_BEGIN_ARGS(SRailheadPauseMenu) {}
 		/** Any object in the world, for the session subsystem and the world's description. */
 		SLATE_ARGUMENT(TWeakObjectPtr<UObject>, Context)
+		/** Back to work was pressed. */
 		SLATE_EVENT(FSimpleDelegate, OnResume)
+		/** Settings was pressed. */
 		SLATE_EVENT(FSimpleDelegate, OnSettings)
 	SLATE_END_ARGS()
 
+	/** Builds the menu: the world's description and the four buttons. */
 	void Construct(const FArguments& InArgs);
 
 private:
 
+	/** Any object in the world, for the session subsystem. */
 	TWeakObjectPtr<UObject> Context;
 };

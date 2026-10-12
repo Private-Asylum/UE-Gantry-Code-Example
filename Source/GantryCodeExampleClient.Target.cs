@@ -2,7 +2,10 @@
 
 using UnrealBuildTool;
 
-/** A client only: joins a server, never hosts. Built from a source or full installed engine. */
+/**
+ * A client only: joins a server, never hosts. Needs an engine built with the Client target (a
+ * source build).
+ */
 public class GantryCodeExampleClientTarget : TargetRules
 {
 	public GantryCodeExampleClientTarget(TargetInfo Target) : base(Target)

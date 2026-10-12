@@ -16,7 +16,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** Overall colour, so the crew can tell each other apart. */
+	/** Colour of their overalls, so the crew can tell each other apart. */
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Railhead|Crew")
 	FLinearColor CrewColor = FLinearColor(0.2f, 0.3f, 0.6f);
 

@@ -8,5 +8,6 @@ namespace RailheadTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Line, "Railhead.Message.Line", "Everything the line announces.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Line_Tunnel, "Railhead.Message.Line.Tunnel", "The train has gone into a tunnel.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Line_Daylight, "Railhead.Message.Line.Daylight", "The train has come out of a tunnel into a new stretch.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Hook_Line_Speed, "Railhead.Hook.Line.Speed", "The line asks what speed the train should head for; listeners may change it.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(HUD_Notes, "Railhead.HUD.Notes", "The HUD's notes column, a UI extension slot.");
 }

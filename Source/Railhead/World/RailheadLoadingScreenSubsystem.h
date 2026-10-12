@@ -31,7 +31,10 @@ class RAILHEAD_API URailheadLoadingScreenSubsystem : public UGameInstanceSubsyst
 
 public:
 
+	/** Watches for new worlds and starts ticking. */
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	/** Stops both and takes any screen down. */
 	virtual void Deinitialize() override;
 
 	/** The feed is spread over this long, and the screen stays up at least this long. */
@@ -48,29 +51,56 @@ public:
 
 private:
 
+	/**
+	 * A world of this game instance has initialised: the curtain goes up, and its experience
+	 * subsystem's state changes are watched from here on.
+	 */
 	void HandleWorldInitialized(UWorld* World, const UWorld::InitializationValues Values);
 
 	/** An activation starting opens the screen (if it is not up already). */
 	UFUNCTION()
 	void HandleStateChanged(EGantryExperienceState OldState, EGantryExperienceState NewState);
 
+	/**
+	 * Reads Gantry's snapshot, steps the feed, and lifts the screen once the feed is done and
+	 * nothing holds it, or MaximumSeconds have passed.
+	 * @return Always true: the ticker keeps running.
+	 */
 	bool Tick(float DeltaSeconds);
+
+	/**
+	 * Puts a new screen up, with a new feed, replacing any screen already up.
+	 * @param World The world the screen covers.
+	 * @param bBlocking The curtain (the world's first activation), or the panel alone.
+	 */
 	void Open(UWorld* World, bool bBlocking);
+
+	/** Takes the screen down and drops its feed. */
 	void Close();
 
 	/** Whether there is nothing left to wait for. */
 	bool IsActivationOver() const;
 
+	/** What the screen shows, while it is up. */
 	TSharedPtr<FRailheadLoadFeed> Feed;
+
+	/** The screen, while it is up. */
 	TSharedPtr<SRailheadLoadingScreen> Screen;
+
+	/** The world the screen covers. */
 	TWeakObjectPtr<UWorld> ScreenWorld;
+
+	/** Whether the screen up is the curtain. */
 	bool bScreenBlocking = false;
+
+	/** When the screen went up, and when the snapshot was last read, in platform seconds. */
 	double OpenedAt = 0.0;
 	double CollectedAt = 0.0;
 
 	/** The world has been shown: later activations in it get the panel, not the curtain. */
 	TWeakObjectPtr<UWorld> ShownWorld;
 
+	/** The listener on new worlds, and the ticker. */
 	FDelegateHandle WorldInitHandle;
 	FTSTicker::FDelegateHandle TickHandle;
 };

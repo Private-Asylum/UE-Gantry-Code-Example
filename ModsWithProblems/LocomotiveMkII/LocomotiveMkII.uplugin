@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "Locomotive Mk II (example mod)",
-	"Description": "A second engine for a newer game: its game feature data needs game version 2.0, so this build refuses it and unmounts it again, saying why.",
+	"Description": "A second locomotive for a newer game: its game feature data needs game version 2.0, so this build refuses it and unmounts it again, saying why.",
 	"Category": "Game Features",
 	"CreatedBy": "Private Asylum",
 	"CreatedByURL": "https://privateasylum.com/",

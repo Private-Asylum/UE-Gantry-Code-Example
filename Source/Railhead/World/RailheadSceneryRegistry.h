@@ -23,16 +23,28 @@ class RAILHEAD_API URailheadSceneryRegistry : public UWorldSubsystem
 
 public:
 
-	/** @return The world's registry, or null. */
+	/**
+	 * @param World Any world; may be null.
+	 * @return The world's registry, or null.
+	 */
 	static URailheadSceneryRegistry* Get(const UWorld* World);
 
-	/** Adds a stretch whose scenery meshes are in memory. */
+	/**
+	 * Adds a stretch whose scenery meshes are in memory.
+	 * @param Stretch The stretch; null is ignored.
+	 */
 	void AddStretch(const URailheadStretchDefinition* Stretch);
 
-	/** @return The stretch a tag names, if its scenery is here. */
+	/**
+	 * @param Tag A stretch's experience tag.
+	 * @return The stretch a tag names, if its scenery is here.
+	 */
 	const URailheadStretchDefinition* FindStretch(const FGameplayTag& Tag) const;
 
-	/** Forgets every stretch not in Keep, so their meshes can go. */
+	/**
+	 * Forgets every stretch not in Keep, so their meshes can go.
+	 * @param Keep The stretches the track can still show, matched exactly.
+	 */
 	void Prune(const FGameplayTagContainer& Keep);
 
 	/** @return A number that changes whenever a stretch is added, for readers that cache. */
@@ -40,12 +52,15 @@ public:
 
 protected:
 
+	/** Game and play-in-editor worlds only. */
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
 private:
 
+	/** The stretches with scenery in memory, by experience tag. */
 	UPROPERTY(Transient)
 	TMap<FGameplayTag, TObjectPtr<const URailheadStretchDefinition>> Stretches;
 
+	/** Counts additions; see GetVersion. */
 	int32 Version = 0;
 };

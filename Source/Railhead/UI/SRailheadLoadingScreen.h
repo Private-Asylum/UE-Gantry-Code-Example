@@ -28,6 +28,7 @@ public:
 		SLATE_ARGUMENT(bool, bBlocking)
 	SLATE_END_ARGS()
 
+	/** Builds the curtain (when blocking) and the panel. */
 	void Construct(const FArguments& InArgs);
 
 	/** How many feed lines the panel shows, newest at the bottom. */
@@ -35,10 +36,21 @@ public:
 
 private:
 
+	/**
+	 * @param Slot The panel's line, 0 at the top.
+	 * @return The feed line shown there: the window ends at the newest line shown.
+	 */
 	FText GetFeedLine(int32 Slot) const;
+
+	/** @return The counts: experiences, stages, features, assets, mods and paks. */
 	FText GetSummary() const;
+
+	/** @return The newest line shown, for the curtain. */
 	FText GetCurtainStatus() const;
+
+	/** @return How much of the feed has been shown, 0 to 1, for the bar. */
 	TOptional<float> GetProgress() const;
 
+	/** The feed this screen reads. */
 	TSharedPtr<const FRailheadLoadFeed> Feed;
 };

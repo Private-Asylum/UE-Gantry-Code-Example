@@ -35,7 +35,13 @@ public:
 
 protected:
 
+	/**
+	 * For a local player: puts the HUD up, hidden, and listens for the low ready tier, the line's
+	 * daylight and the notes slot.
+	 */
 	virtual void BeginPlay() override;
+
+	/** Stops listening and takes the widgets off the screen. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
@@ -56,11 +62,15 @@ private:
 	/** A note arrived in, or left, the notes slot. */
 	void HandleNote(EGantryUIExtensionAction Action, const FGantryUIExtensionEntry& Entry);
 
+	/** The HUD on screen, hidden until the first stretch is ready. */
 	TSharedPtr<SRailheadHud> Widget;
 
 	/** The mismatch screen, once shown. */
 	TSharedPtr<class SWidget> Mismatch;
 
+	/** The listener on Railhead.Message.Line.Daylight. */
 	FGantryMessageListenerHandle DaylightListener;
+
+	/** This HUD's registration of the Railhead.HUD.Notes slot. */
 	FGantryUIExtensionSlotHandle NotesSlot;
 };

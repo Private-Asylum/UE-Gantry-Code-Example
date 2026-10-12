@@ -21,6 +21,7 @@ namespace RailheadTrain
 	/** Width of decks and bodies. */
 	inline constexpr double Width = 300.0;
 
+	/** Radius of every wheel; the wheels stand on the rails. */
 	inline constexpr double WheelRadius = 45.0;
 
 	/** Space between two cars, bridged by a plate. */
@@ -57,7 +58,7 @@ enum class ERailheadCarBody : uint8
  * A Blueprint subclass is a new car: set its length, body and paint, and add components for
  * anything more. Nothing in the game needs to know about it.
  */
-UCLASS(Blueprintable, meta = (ShortTooltip = "A car the train can couple; subclass it for a new one."))
+UCLASS(Blueprintable, meta = (GantryAPI, GantryAPIBlueprint, ShortTooltip = "A car the train can couple; subclass it for a new one."))
 class RAILHEAD_API ARailheadCar : public AActor
 {
 	GENERATED_BODY()
@@ -111,14 +112,24 @@ protected:
 	/**
 	 * Adds one painted piece; centre and size in centimetres, relative to the car's centre at rail
 	 * height.
+	 * @param Name The component's name, unique on this car.
+	 * @param Mesh One of the basic shapes, 1 m across (CubeMesh, CylinderMesh).
+	 * @param Centre Where the piece's centre sits.
+	 * @param SizeCm The piece's size.
+	 * @param Color Its paint.
+	 * @param bIsBody Whether PaintBody repaints it.
+	 * @param Rotation Its turn, for cylinders laid along or across the track.
+	 * @param Glow How strongly the paint glows; 0 for none.
 	 * @return The piece.
 	 */
 	UStaticMeshComponent* AddPart(const FString& Name, UStaticMesh* Mesh, const FVector& Centre, const FVector& SizeCm, const FLinearColor& Color,
 		bool bIsBody = false, const FRotator& Rotation = FRotator::ZeroRotator, float Glow = 0.0f);
 
+	/** The engine's basic cube, for AddPart. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> CubeMesh;
 
+	/** The engine's basic cylinder, for AddPart: wheels, tanks. */
 	UPROPERTY()
 	TObjectPtr<UStaticMesh> CylinderMesh;
 
@@ -127,6 +138,7 @@ private:
 	/** Removes what an earlier construction built (the editor reconstructs on every change). */
 	void ClearParts();
 
+	/** The car's centre at rail height; every part hangs from it. */
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Car")
 	TObjectPtr<USceneComponent> Root;
 
@@ -134,6 +146,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Railhead|Car")
 	TObjectPtr<UPointLightComponent> Lamp;
 
+	/** Every piece the last construction built, removed by the next. */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UStaticMeshComponent>> Parts;
 
@@ -141,6 +154,7 @@ private:
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> BodyPaints;
 
+	/** The flat paint every piece is drawn with, tinted per piece (M_Railhead_Paint). */
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> PaintMaterial;
 };

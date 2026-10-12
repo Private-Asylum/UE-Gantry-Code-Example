@@ -35,7 +35,10 @@ public:
 	/** Railhead.Stage.Scenery. */
 	virtual FGameplayTag GetStageTag_Implementation() const override;
 
-	/** Loads the stretch's scenery assets, then registers the stretch (URailheadSceneryRegistry) and finishes. */
+	/**
+	 * Loads the stretch's scenery assets, then registers the stretch (URailheadSceneryRegistry) and
+	 * finishes.
+	 */
 	virtual void BeginStage(const FGantryExperienceStageContext& Context, FOnStageFinished OnFinished) override;
 
 	/** Lets go of the loaded assets; the line keeps what it still shows. */

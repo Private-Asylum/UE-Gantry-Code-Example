@@ -2,7 +2,7 @@
 
 using UnrealBuildTool;
 
-/** The editor, with the game module and its editor-only parts. */
+/** The editor, with the game module. */
 public class GantryCodeExampleEditorTarget : TargetRules
 {
 	public GantryCodeExampleEditorTarget(TargetInfo Target) : base(Target)

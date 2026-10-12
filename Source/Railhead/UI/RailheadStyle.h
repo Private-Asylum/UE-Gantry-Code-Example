@@ -16,6 +16,12 @@ struct FSlateBrush;
  */
 namespace RailheadStyle
 {
+	/**
+	 * The engine's default font.
+	 * @param Size Point size.
+	 * @param bBold Bold rather than regular.
+	 * @return The font.
+	 */
 	inline FSlateFontInfo Font(int32 Size, bool bBold = false)
 	{
 		return FCoreStyle::GetDefaultFontStyle(bBold ? "Bold" : "Regular", Size);
@@ -63,10 +69,21 @@ namespace RailheadStyle
 		return Style;
 	}
 
+	/** Headings, titles and the gauge's normal fill. */
 	inline const FLinearColor Brass(0.95f, 0.72f, 0.32f);
+
+	/** Body text. */
 	inline const FLinearColor Paper(0.93f, 0.9f, 0.82f);
+
+	/** Secondary text: descriptions, summaries. */
 	inline const FLinearColor Dim(0.6f, 0.58f, 0.52f);
+
+	/** Translucent panel backgrounds. */
 	inline const FLinearColor Soot(0.02f, 0.02f, 0.025f, 0.72f);
+
+	/** Opaque black, for whatever must hide everything behind it. */
 	inline const FLinearColor Black(0.0f, 0.0f, 0.0f, 1.0f);
+
+	/** Warnings, refusals and the loading bar. */
 	inline const FLinearColor Ember(1.0f, 0.38f, 0.08f);
 }

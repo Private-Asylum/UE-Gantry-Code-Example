@@ -13,7 +13,7 @@
  * multiply, fog blends and density add, snow takes the most any source asks for. The line eases
  * into and out of it as it does between stretches.
  */
-USTRUCT(BlueprintType, meta = (DocumentationPolicy = "Strict"))
+USTRUCT(BlueprintType, meta = (GantryAPI, GantryAPIBlueprint, DocumentationPolicy = "Strict"))
 struct RAILHEAD_API FRailheadWeather
 {
 	GENERATED_BODY()

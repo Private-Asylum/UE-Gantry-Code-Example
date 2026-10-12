@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "Blizzard (example mod)",
-	"Description": "Snow over the Coast Line: every Coast stretch runs under a low white sky, in falling light, with snow on the ground. It extends the Coast Line; the game never names it.",
+	"Description": "Snow over the Coast Line: every Coast stretch runs under a low white sky, in falling light, with snow on the ground, and the train runs slower on slippery rails (Train Speed Scale 0.85, and a Patch Data action on the Coast Line's acceleration). It extends the Coast Line; the game never names it.",
 	"Category": "Game Features",
 	"CreatedBy": "Private Asylum",
 	"CreatedByURL": "https://privateasylum.com/",

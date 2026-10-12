@@ -4,7 +4,7 @@
 
 #include "HAL/IConsoleManager.h"
 
-/** Development aids, all off (or 1) by default. Each says what it is for. */
+/** Development aids (cheats: not in Shipping). Each defaults to no effect and says what it is for. */
 namespace RailheadCVars
 {
 	/** railhead.SpeedScale: multiplies the train's speed. For watching a whole route in a minute. */

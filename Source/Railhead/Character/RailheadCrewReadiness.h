@@ -9,6 +9,7 @@
 
 class URailheadInputConfig;
 
+// @doc
 /**
  * Gets a crew member ready in Gantry's init-state steps (the four InitState tags), each when it can:
  *
@@ -41,8 +42,13 @@ public:
 
 protected:
 
+	/** Holds the loading screen (not on a dedicated server) and starts trying to move on. */
 	virtual void BeginPlay() override;
+
+	/** Lets go of the loading screen and stops retrying. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Whether the step from CurrentState to DesiredState can be taken yet (see the list above). */
 	virtual bool K2_CanChangeInitState_Implementation(FGameplayTag CurrentState, FGameplayTag DesiredState) const override;
 
 private:
@@ -56,5 +62,6 @@ private:
 	/** Tries to move on, and stops retrying once ready. */
 	void Retry();
 
+	/** Retries four times a second until ready. */
 	FTimerHandle RetryTimer;
 };

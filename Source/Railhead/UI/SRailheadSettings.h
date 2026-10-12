@@ -33,7 +33,10 @@ public:
 		SLATE_EVENT(FSimpleDelegate, OnClosed)
 	SLATE_END_ARGS()
 
+	/** Builds the tabs, the rows for the first page, and the buttons, and listens for changes. */
 	void Construct(const FArguments& InArgs);
+
+	/** Stops listening to the registry. */
 	virtual ~SRailheadSettings() override;
 
 	/** Rebuilds the tabs when pages arrive or leave (an experience starting or ending). */
@@ -56,19 +59,33 @@ private:
 	/** The control for a setting, by its kind. */
 	TSharedRef<SWidget> MakeControl(UGantrySetting* Setting);
 
+	/** Applies the changes and closes, unless a display change still waits to be kept. */
 	FReply Done();
+
+	/** Puts back every change not yet applied. */
 	FReply Revert();
+
+	/** Sets the page shown to its defaults. */
 	FReply Reset();
 
+	/** The player's registry. */
 	TWeakObjectPtr<UGantrySettingsRegistry> Registry;
+
+	/** The page whose rows are showing. */
 	TWeakObjectPtr<const UGantrySettingsPage> Shown;
+
+	/** Called by Done, after applying. */
 	FSimpleDelegate OnClosed;
 
+	/** The tab column, one button per page. */
 	TSharedPtr<SVerticalBox> Tabs;
+
+	/** The rows of the page shown. */
 	TSharedPtr<SScrollBox> Rows;
 
 	/** How many pages the tabs were built for. */
 	int32 KnownPageCount = -1;
 
+	/** The listener on the registry's setting changes. */
 	FDelegateHandle PagesHandle;
 };

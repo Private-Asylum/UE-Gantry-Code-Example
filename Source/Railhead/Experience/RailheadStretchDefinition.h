@@ -13,8 +13,11 @@ class UStaticMesh;
 UENUM(BlueprintType)
 enum class ERailheadTrackSide : uint8
 {
+	/** Left of the track only. */
 	Left,
+	/** Right of the track only. */
 	Right,
+	/** Both sides, each placed independently. */
 	Both
 };
 
@@ -147,7 +150,7 @@ struct RAILHEAD_API FRailheadStretchLight
  * Stretches are children of a route experience (Coast Line), so their activation chain is the base
  * experience, the route, then the stretch, and the route's stages serve every stretch on it.
  */
-UCLASS(BlueprintType, meta = (ShortTooltip = "A stretch of track: its length, scenery, light and the stretch after it."))
+UCLASS(BlueprintType, meta = (GantryAPI, GantryAPIBlueprint, ShortTooltip = "A stretch of track: its length, scenery, light and the stretch after it."))
 class RAILHEAD_API URailheadStretchDefinition : public UGantryExperienceDefinition
 {
 	GENERATED_BODY()

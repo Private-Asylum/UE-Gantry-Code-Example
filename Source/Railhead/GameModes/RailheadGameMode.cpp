@@ -17,7 +17,7 @@
 
 namespace RailheadGameMode
 {
-	/** Overall colours, handed out in turn. */
+	/** Colours of overalls, handed out in turn. */
 	const FLinearColor CrewColors[] =
 	{
 		FLinearColor(0.08f, 0.2f, 0.55f),

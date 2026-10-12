@@ -17,7 +17,7 @@ struct FStreamableHandle;
  *
  * The car classes load as a tracked load under the stage's scope.
  */
-UCLASS(meta = (DisplayName = "Couple Cars", ShortTooltip = "Couples cars to the train while the experience runs."))
+UCLASS(meta = (GantryAPI, GantryAPIBlueprint, DisplayName = "Couple Cars", ShortTooltip = "Couples cars to the train while the experience runs."))
 class RAILHEAD_API URailheadStage_CoupleCars : public UGantryExperienceStage
 {
 	GENERATED_BODY()
